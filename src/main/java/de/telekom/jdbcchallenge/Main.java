@@ -15,11 +15,13 @@ public class Main {
 
 		try (Connection connection = DriverManager
 				.getConnection("jdbc:mariadb://localhost:3306/seadb?user=seauser&password=seapass");) {
-
-			String query = "DELETE FROM personen WHERE id=1 OR id=2";
+			
+			// delete 2 resords in table personen
+			String query = "DELETE FROM personen WHERE id in(1,2)";
 			try (PreparedStatement delps = connection.prepareStatement(query);) {
 				delps.execute();
-
+				
+				// adding 2 resords (persos) into the table personen
 				query = "INSERT INTO personen (ID, ANREDE, VORNAME, NACHNAME) VALUES ( ?, ?, ?, ? )";
 				try (PreparedStatement ps = connection.prepareStatement(query);) {
 					ps.setLong(1, 1L);
@@ -33,7 +35,12 @@ public class Main {
 					ps.setString(3, "Henrick");
 					ps.setString(4, "Mustermann");
 					ps.execute();
-
+					
+					// change lastname of a person with id=2
+					query = "UPDATE personen SET nachname='Changed' WHERE id=2";
+					PreparedStatement updateps = connection.prepareStatement(query);
+					updateps.execute();
+					
 					/**
 					 * create SELECT statement and execute it
 					 */
